@@ -2,16 +2,16 @@ import dimacs
 
 
 def load_graph(file_name):
-    vertex_number, edges = dimacs.loadWeightedGraph(f"example_graphs\\{file_name}")
+    vertex_number, edges = dimacs.loadWeightedGraph(f"..\\example_graphs\\{file_name}")
     return vertex_number, edges
 
 
 # noinspection PyTypeChecker
 def to_adjacency_list(vertex_number, edges):
-    adj_list = [[] for _ in range(vertex_number + 1)]
+    adj_list = [[] for _ in range(vertex_number)]
     for edge in edges:
-        adj_list[edge[0]].append((edge[1], edge[2]))
-        adj_list[edge[1]].append((edge[0], edge[2]))
+        adj_list[edge[0] - 1].append((edge[1] - 1, edge[2]))
+        adj_list[edge[1] - 1].append((edge[0] - 1, edge[2]))
     return adj_list
 
 
