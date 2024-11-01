@@ -27,7 +27,7 @@ class ResidualNetwork:
             min_edge = self.dfs(self.network[start][i][0], end, min(current_min, self.network[start][i][1]))
             if min_edge:
                 # Update'ujemy przepływ w oryginalnym grafie
-                # self.org_graph[start][i][2] += min_edge
+                self.org_graph[start][i][2] += min_edge
                 # Update'ujemy przepływ w sieci rezydualnej
                 self.network[start][i][1] -= min_edge
                 # Update'ujemy przepływ w sieci rezydualnej dla krawędzi wstecznej

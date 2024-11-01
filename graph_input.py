@@ -16,16 +16,16 @@ def to_adjacency_list(vertex_number, edges, *, directed: bool=False, flow_field:
     adj_list = [[] for _ in range(vertex_number)]
     for edge in edges:
         if flow_field:
-            edge = (edge[1] - 1, edge[2], 0)
+            edge = [edge[1] - 1, edge[2], 0]
         else:
-            edge = (edge[1] - 1, edge[2])
+            edge = [edge[1] - 1, edge[2]]
         adj_list[edge[0] - 1].append(edge)
 
         if not directed:
             if flow_field:
-                edge = (edge[0] - 1, edge[2], 0)
+                edge = [edge[0] - 1, edge[2], 0]
             else:
-                edge = (edge[0] - 1, edge[2])
+                edge = [edge[0] - 1, edge[2]]
             adj_list[edge[1] - 1].append(edge)
     return adj_list
 
