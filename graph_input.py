@@ -1,13 +1,13 @@
 import dimacs
 
 
-def load_graph(file_name):
-    vertex_number, edges = dimacs.loadWeightedGraph(f"..\\example_graphs\\{file_name}")
+def load_graph(file_name, path="example_graphs"):
+    vertex_number, edges = dimacs.loadWeightedGraph(f"..\\{path}\\{file_name}")
     return vertex_number, edges
 
 
-def load_directed_graph(file_name):
-    vertex_number, directed_edges = dimacs.loadDirectedWeightedGraph(f"..\\example_graphs\\")
+def load_directed_graph(file_name, path="example_graphs"):
+    vertex_number, directed_edges = dimacs.loadDirectedWeightedGraph(f"..\\{path}\\{file_name})")
     return vertex_number, directed_edges
 
 
