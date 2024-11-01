@@ -7,7 +7,7 @@ def load_graph(file_name, path="example_graphs"):
 
 
 def load_directed_graph(file_name, path="example_graphs"):
-    vertex_number, directed_edges = dimacs.loadDirectedWeightedGraph(f"..\\{path}\\{file_name})")
+    vertex_number, directed_edges = dimacs.loadDirectedWeightedGraph(f"..\\{path}\\{file_name}")
     return vertex_number, directed_edges
 
 
@@ -16,17 +16,17 @@ def to_adjacency_list(vertex_number, edges, *, directed: bool=False, flow_field:
     adj_list = [[] for _ in range(vertex_number)]
     for edge in edges:
         if flow_field:
-            edge = [edge[1] - 1, edge[2], 0]
+            added_edge = (edge[1] - 1, edge[2], 0)
         else:
-            edge = [edge[1] - 1, edge[2]]
-        adj_list[edge[0] - 1].append(edge)
+            added_edge = (edge[1] - 1, edge[2])
+        adj_list[edge[0] - 1].append(added_edge)
 
         if not directed:
             if flow_field:
-                edge = [edge[0] - 1, edge[2], 0]
+                added_edge = (edge[0] - 1, edge[2], 0)
             else:
-                edge = [edge[0] - 1, edge[2]]
-            adj_list[edge[1] - 1].append(edge)
+                added_edge = (edge[0] - 1, edge[2])
+            adj_list[edge[1] - 1].append(added_edge)
     return adj_list
 
 
