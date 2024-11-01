@@ -6,6 +6,11 @@ def load_graph(file_name):
     return vertex_number, edges
 
 
+def load_directed_graph(file_name):
+    vertex_number, directed_edges = dimacs.loadDirectedWeightedGraph(f"..\\example_graphs\\")
+    return vertex_number, directed_edges
+
+
 # noinspection PyTypeChecker
 def to_adjacency_list(vertex_number, edges):
     adj_list = [[] for _ in range(vertex_number)]
