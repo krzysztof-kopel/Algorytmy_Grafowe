@@ -9,3 +9,13 @@ def ford_fulkerson_dfs(graph):
         max_flow += augmenting_path
 
     return max_flow
+
+
+def edmonds_karp(graph):
+    res_network = ResidualNetwork(graph)
+    max_flow = 0
+
+    while augumenting_path := res_network.bfs():
+        max_flow += augumenting_path
+
+    return max_flow
