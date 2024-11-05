@@ -1,4 +1,5 @@
-from .residual_network import ResidualNetwork
+from residual_network import ResidualNetwork
+
 
 def ford_fulkerson_dfs(graph):
     # Uwzględniamy domyślnie, że zawsze start = wierzchołek 1, end = ostatni wierzchołek
