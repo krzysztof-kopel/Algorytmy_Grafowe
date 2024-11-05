@@ -33,7 +33,7 @@ def to_adjacency_list(vertex_number, edges, *, directed: bool=False, flow_field:
 def make_all_edges_unit(edges):
     for i in range(len(edges)):
         edges[i] = list(edges[i])
-        edges[i][1] = 1
+        edges[i][2] = 1
         edges[i] = tuple(edges[i])
 
     return edges
