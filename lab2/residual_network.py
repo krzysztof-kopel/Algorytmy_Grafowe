@@ -22,8 +22,6 @@ class ResidualNetwork:
             self.org_graph.append([edge])
             self.org_graph[v].append((len(self.org_graph) - 1, edge[1]))
             self.org_graph[v].remove(edge)
-
-
         
         self.network = [[] for _ in range(len(self.org_graph))]
 
