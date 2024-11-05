@@ -30,6 +30,15 @@ def to_adjacency_list(vertex_number, edges, *, directed: bool=False, flow_field:
     return adj_list
 
 
+def make_all_edges_unit(edges):
+    for i in range(len(edges)):
+        edges[i] = list(edges[i])
+        edges[i][1] = 1
+        edges[i] = tuple(edges[i])
+
+    return edges
+
+
 if __name__ == "__main__":
     vertex_number, edges = load_graph("clique5")
     print(f"Wszystkich wierzchołków jest {vertex_number}")
