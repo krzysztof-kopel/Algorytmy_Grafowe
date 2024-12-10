@@ -29,7 +29,8 @@ def minimum_phase_cut(graph: Graph, start_vertex: int=0):
 
         for (vertex, edge_length) in graph.nodes[next_vertex].edges.items():
             edges_to_s[vertex] += edge_length
-            queue.put((-edges_to_s[vertex], vertex))
+            if not vertex in visited:
+                queue.put((-edges_to_s[vertex], vertex))
 
     last_vertex = set_s[-1]
     potential_result = 0
