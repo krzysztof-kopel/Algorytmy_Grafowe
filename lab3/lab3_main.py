@@ -1,3 +1,4 @@
+from algorithm_comparator import compare_algorithms
 from graph_input import to_adjacency_list, load_graph, make_all_edges_unit
 from consistency import edmonds_karp_consistency
 from stoer_wagner import stoer_wagner
@@ -12,5 +13,4 @@ with open(f"graphs-lab3\\{file_name}") as file:
     answer = int(file.readline().split()[-1])
 
 print(f"Wynik prawidłowy: {answer}")
-print(f"Wynik algorytmu Stoera-Wagnera: {stoer_wagner(graph)}")
-print(f"Wynik wielokrotnie uruchomionego algorytmu Edmondsa-Karpa: {edmonds_karp_consistency(graph)}")
+compare_algorithms([stoer_wagner, edmonds_karp_consistency], ["Stoera-Wagnera", "Edmondsa-Karpa (wielokrotnie wywołanego)"], graph)
