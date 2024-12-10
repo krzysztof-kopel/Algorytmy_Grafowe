@@ -1,5 +1,6 @@
 from graph_input import to_adjacency_list, load_graph, make_all_edges_unit
 from consistency import edmonds_karp_consistency
+from stoer_wagner import stoer_wagner
 
 print("Lab3 - Spójność krawędziowa")
 file_name = input("Podaj nazwę pliku z grafem: ")
@@ -11,4 +12,5 @@ with open(f"graphs-lab3\\{file_name}") as file:
     answer = int(file.readline().split()[-1])
 
 print(f"Wynik prawidłowy: {answer}")
-print(f"Wynik algorytmu Edmondsa-Karpa: {edmonds_karp_consistency(graph)}")
+print(f"Wynik algorytmu Stoera-Wagnera: {stoer_wagner(graph)}")
+print(f"Wynik wielokrotnie uruchomionego algorytmu Edmondsa-Karpa: {edmonds_karp_consistency(graph)}")

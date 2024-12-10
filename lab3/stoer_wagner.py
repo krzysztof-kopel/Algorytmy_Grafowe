@@ -1,7 +1,9 @@
 from queue import PriorityQueue
 from graph_class import Graph
 
-def stoer_wagner(graph: Graph):
+
+def stoer_wagner(adj_list: list[tuple[int]]):
+    graph = Graph(adj_list)
     min_cut = float('inf')
     while graph.rank > 1:
         min_cut = min(min_cut, minimum_phase_cut(graph))
@@ -10,7 +12,7 @@ def stoer_wagner(graph: Graph):
 
 def minimum_phase_cut(graph: Graph, start_vertex: int=0):
     set_s = [start_vertex]
-    edges_to_s = [0] * graph.rank
+    edges_to_s = [0] * graph.org_rank
     visited = set()
     visited.add(start_vertex)
     queue = PriorityQueue()

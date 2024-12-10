@@ -8,7 +8,8 @@ class Node:
         self.inactive = False
 
     def del_edge(self, to):
-        del self.edges[to]
+        if to in self.edges.keys():
+            del self.edges[to]
 
 
 class Graph:
@@ -24,6 +25,7 @@ class Graph:
                 self.add_edge(i, adj_list[i][j][0], adj_list[i][j][1], True)
 
         self.rank = len(adj_list)
+        self.org_rank = self.rank
 
     def display_graph(self):
         print(f"Rozmiar: {int(self.size)}\nRząd: {self.rank}")
@@ -47,6 +49,7 @@ class Graph:
             vertex_y.del_edge(edge[0])
             self.size -= 1
         vertex_y.inactive = True
+        self.rank -= 1
 
     def add_edge(self, start, to, weight, directed):
         start_node = self.nodes[start]
