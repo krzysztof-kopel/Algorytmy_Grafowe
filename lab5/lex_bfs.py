@@ -33,7 +33,7 @@ def lex_bfs(graph: list[Node], start_index=0) -> list[Node]:
             node_sets.pop()
 
         for i in range(len(node_sets)):
-            set_1, set_2 = partition_set(node_sets[i], current_node)
+            set_1, set_2 = partition_set(node_sets[i], graph[current_node])
             if len(set_1) != 0:
                 new_node_sets_list.append(set_1)
             if len(set_2) != 0:
@@ -45,24 +45,35 @@ def lex_bfs(graph: list[Node], start_index=0) -> list[Node]:
 
 
 def check_lex_bfs(graph, vs):
-  n = len(graph)
-  pi = [None] * n
-  for i, v in enumerate(vs):
-    pi[v] = i
+    n = len(graph)
+    # pi[v] stores the position of vertex v in the Lex-BFS order.
+    pi = [None] * n
+    for i, v in enumerate(vs):
+        pi[v] = i
 
-  for i in range(n-1):
-    for j in range(i+1, n-1):
-      ni = graph[vs[i]].out
-      nj = graph[vs[j]].out
+    # Check Lex-BFS condition for every pair of vertices
+    for i in range(n - 1):
+        ni = graph[vs[i]].out  # Neighbors of vs[i]
+        for j in range(i + 1, n):
+            nj = graph[vs[j]].out  # Neighbors of vs[j]
 
-      vertices = [pi[v] for v in nj - ni if pi[v] < i]
-      if vertices:
-        viable = [pi[v] for v in ni - nj]
-        if not viable or min(vertices) <= min(viable):
-          return False
-  return True
+            # Calculate vertices violating Lex-BFS ordering
+            conflicting = [pi[v] for v in nj - ni if pi[v] < i]
+            if conflicting:
+                viable = [pi[v] for v in ni - nj]
+                if not viable or min(conflicting) <= min(viable):
+                    return False
+
+    return True
 
 
 if __name__ == "__main__":
-    rank, edges = load_graph("clique4", "lab5\\graphs-lab5\\chordal")
-    # TODO zmienić indeksowanie na zaczynające się od 0 i dalej testować funkcję
+    rank, edges = load_graph("franklin", "lab5\\graphs-lab5\\chordal")
+    graph = [Node(i) for i in range(rank)]
+    for (u, v, _) in edges:
+        graph[u - 1].connect_to(v - 1)
+        graph[v - 1].connect_to(u - 1)
+    lex_bfs_ordering = lex_bfs(graph)
+    print(check_lex_bfs(graph, lex_bfs_ordering))
+
+
