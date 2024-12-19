@@ -1,5 +1,5 @@
 from queue import PriorityQueue
-# from data import runtests
+from data import runtests
 
 def to_adjacency_list(vertex_number, edges):
     adj_list = [[] for _ in range(vertex_number)]
@@ -41,4 +41,4 @@ def my_solve(N, streets, lords):
     graph = to_adjacency_list(N, streets)
     return list(prim(graph))
 
-# runtests(my_solve)
+runtests(my_solve)
