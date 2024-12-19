@@ -1,6 +1,15 @@
 from queue import PriorityQueue
 from data import runtests
 
+class Node:
+  def __init__(self, idx):
+    self.idx = idx
+    self.out = set()
+
+  def connect_to(self, v):
+    self.out.add(v)
+
+
 def to_adjacency_list(vertex_number, edges):
     adj_list = [[] for _ in range(vertex_number)]
     for edge in edges:
@@ -39,6 +48,14 @@ def prim(graph: list[list[int]], start_index: int=0, both_sides: bool=True) -> s
 # noinspection PyPep8Naming
 def my_solve(N, streets, lords):
     graph = to_adjacency_list(N, streets)
-    return list(prim(graph))
+
+    mst_edges = prim(graph)
+    graph = [Node(i) for i in range(N)]
+    for edge_from, edge_to in mst_edges:
+        graph[edge_from].connect_to(edge_to)
+
+    # 1. Graf konfliktów
+    # 2. Lex-BFS
+    # 3. Kolorowanie w kolejności Lex-BFS
 
 runtests(my_solve)
