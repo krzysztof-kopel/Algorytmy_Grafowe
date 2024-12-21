@@ -1,4 +1,7 @@
 from queue import PriorityQueue
+
+from dask.order import order
+
 from data import runtests
 
 class Node:
@@ -7,6 +10,8 @@ class Node:
     self.out = set()
     self.lords = set() # Używane tylko, gdy Node jest wierzchołkiem oryginalnego drzewa
     self.weight = weight # Używane tylko, gdy Node jest wierzchołkiem grafu konfliktów
+    self.temp_weight = weight
+    self.color = None
 
   def connect_to(self, v, weight=0):
     if weight > 0:
@@ -25,6 +30,47 @@ def to_adjacency_list(vertex_number, edges):
         adj_list[edge[1] - 1].append(added_edge)
 
     return adj_list
+
+def partition_set(node_set: set[int], vertex: Node):
+    # Funkcja dzieli node_set na set tych wierzchołków, które nie sąsiadują z vertex i set tych, które sąsiadują, po
+    # czym zwraca je w tej kolejności.
+    neighbor_set = set()
+    foreign_set = set()
+    while len(node_set) != 0:
+        next_node = node_set.pop()
+        if next_node in vertex.out:
+            neighbor_set.add(next_node)
+        else:
+            foreign_set.add(next_node)
+    return foreign_set, neighbor_set
+
+def lex_bfs(graph: list[Node], start_index=0) -> list[Node]:
+    # Wersja o najgorszej złożoności obliczeniowej
+
+    # node_sets -> lista zbiorów, gdzie każdy zbiór zawiera wierzchołki mające takie same (leksykograficznie) zbiory poprzedników
+    result_ordering = []
+    node_sets = [set(), {start_index}]
+    for node in graph:
+        if node.idx != start_index:
+            node_sets[0].add(node.idx)
+
+    while len(node_sets) != 0:
+        current_node = node_sets[-1].pop()
+        result_ordering.append(current_node)
+        new_node_sets_list = []
+        if len(node_sets[-1]) == 0:
+            node_sets.pop()
+
+        for i in range(len(node_sets)):
+            set_1, set_2 = partition_set(node_sets[i], graph[current_node])
+            if len(set_1) != 0:
+                new_node_sets_list.append(set_1)
+            if len(set_2) != 0:
+                new_node_sets_list.append(set_2)
+
+        node_sets = new_node_sets_list
+
+    return result_ordering
 
 def prim(graph: list[list[int]], start_index: int=0) -> set[tuple[int, int]]:
     # queue: (weight, edge_to, edge_from)
@@ -63,7 +109,7 @@ def find_lord_subtree(lord_number: int, controlled: set[int], graph: list[Node])
             if neighbor == parent:
                 continue
             if neighbor not in visited:
-                dfs(graph[neighbor], node)
+                dfs(graph[neighbor], node.idx)
                 if graph[neighbor].idx in subtree_vertices:
                     node.lords.add(lord_number)
                     subtree_vertices.add(node.idx)
@@ -73,6 +119,24 @@ def find_lord_subtree(lord_number: int, controlled: set[int], graph: list[Node])
     dfs(start, None)
 
     return lord_weight
+
+
+def color_graph(graph: list[Node], ordering: list[int]):
+
+    for index in ordering:
+        node = graph[index]
+        if node.temp_weight > 0:
+            graph[index].color = 'red'
+
+            for neighbor_idx in node.out:
+                if ordering.index(neighbor_idx) < ordering.index(index):
+                    continue
+                graph[neighbor_idx].temp_weight -= node.temp_weight
+
+    for index in reversed(ordering):
+        node = graph[index]
+        if node.color == 'red' and all(graph[i].color != 'blue' for i in node.out):
+            node.color = 'blue'
 
 
 # noinspection PyPep8Naming
@@ -100,23 +164,10 @@ def my_solve(N, streets, lords):
                 conflict_graph[node_lords[i]].connect_to(node_lords[j])
                 conflict_graph[node_lords[j]].connect_to(node_lords[i])
 
-    return conflict_graph
-    # 1. Graf konfliktów -> Done
-    # 2. Lex-BFS
-    # 3. Kolorowanie w kolejności Lex-BFS
+    perfect_elimination_ordering = lex_bfs(conflict_graph)
 
-streets = [
-    (1, 2, 4),
-    (2, 3, 5),
-    (3, 4, 6),
-    (4, 5, 8),
-    (5, 6, 7),
-    (1, 6, 9),
-    (2, 5, 10)]
-lords = [
-    [1, 3],
-    [2, 5],
-    [4, 6]]
+    color_graph(conflict_graph, perfect_elimination_ordering[::-1])
 
-my_solve(6, streets, lords)
+    return sum(map(lambda node: node.weight, filter(lambda node: node.color == 'blue', conflict_graph)))
+
 runtests(my_solve)
