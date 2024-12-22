@@ -5,7 +5,6 @@ class Node:
   def __init__(self, idx, weight=0):
     self.idx = idx
     self.out = dict()
-    self.lords = set() # Używane tylko, gdy Node jest wierzchołkiem oryginalnego drzewa
     self.weight = weight # Używane tylko, gdy Node jest wierzchołkiem grafu konfliktów
     self.temp_weight = weight
     self.color = None
@@ -88,7 +87,7 @@ def prim(graph: list[list[int]], start_index: int=0) -> set[tuple[int, int, int]
     return edges_in_mst
 
 
-def find_lords_subtrees(lords: list[list[int]], graph: list[Node]) -> list[int]:
+def find_lords_subtrees(lords: list[list[int]], graph: list[Node]) -> list[tuple[set[int], int]]:
     result = []
 
     node_edges = [set() for _ in range(len(graph))]
@@ -124,11 +123,11 @@ def find_lords_subtrees(lords: list[list[int]], graph: list[Node]) -> list[int]:
 
         lord_edges = list(lord_edges_sum - lord_edges_intersect)
         lord_sum = sum(map(lambda edge: edge[2], lord_edges))
+        lord_set = set()
         for start, end, _ in lord_edges:
-            graph[start].lords.add(i)
-            graph[end].lords.add(i)
-
-        result.append(lord_sum)
+            lord_set.add(start)
+            lord_set.add(end)
+        result.append((lord_set, lord_sum))
 
     return result
 
@@ -164,22 +163,16 @@ def my_solve(N, streets, lords):
     for edge_from, edge_to, weight in mst_edges:
         graph[edge_from].connect_to(edge_to, weight)
         graph[edge_to].connect_to(edge_from, weight)
-    for i in range(len(lords)):
-        lord = lords[i]
-        for castle in lord:
-            graph[castle].lords.add(i)
 
     conflict_graph = [Node(i) for i in range(len(lords))]
-    lords_weights = find_lords_subtrees(lords, graph)
+    lords_data = find_lords_subtrees(lords, graph)
     for i in range(len(conflict_graph)):
-        conflict_graph[i].weight = lords_weights[i]
-        conflict_graph[i].temp_weight = lords_weights[i]
-    for node in graph:
-        node_lords = list(node.lords)
-        for i in range(len(node_lords)):
-            for j in range(i + 1, len(node_lords)):
-                conflict_graph[node_lords[i]].connect_to(node_lords[j])
-                conflict_graph[node_lords[j]].connect_to(node_lords[i])
+        conflict_graph[i].weight = lords_data[i][1]
+        conflict_graph[i].temp_weight = lords_data[i][1]
+        for j in range(i + 1, len(conflict_graph)):
+            if len(lords_data[i][0] & lords_data[j][0]) > 0:
+                conflict_graph[i].connect_to(j)
+                conflict_graph[j].connect_to(i)
 
     perfect_elimination_ordering = lex_bfs(conflict_graph)
 
