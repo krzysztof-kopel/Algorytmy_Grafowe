@@ -15,7 +15,7 @@ def partition_set(node_set: set[int], vertex: Node):
     return foreign_set, neighbor_set
 
 
-def lex_bfs(graph: list[Node], start_index=0) -> list[Node]:
+def lex_bfs(graph: list[Node], start_index=0) -> list[int]:
     # Wersja o najgorszej złożoności obliczeniowej
 
     # node_sets -> lista zbiorów, gdzie każdy zbiór zawiera wierzchołki mające takie same (leksykograficznie) zbiory poprzedników
@@ -42,6 +42,11 @@ def lex_bfs(graph: list[Node], start_index=0) -> list[Node]:
         node_sets = new_node_sets_list
 
     return result_ordering
+
+def lex_bfs_nodes(graph: list[Node], start_index=0) -> list[Node]:
+    graph.sort(key=lambda x: x.idx)
+    int_list = lex_bfs(graph, start_index)
+    return [graph[i] for i in int_list]
 
 
 def check_lex_bfs(graph, vs):
