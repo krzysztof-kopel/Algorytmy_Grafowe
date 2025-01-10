@@ -41,7 +41,7 @@ def partition_set(node_set: set[int], vertex: Node):
             foreign_set.add(next_node)
     return foreign_set, neighbor_set
 
-def lex_bfs(graph: list[Node], start_index=0) -> list[Node]:
+def lex_bfs(graph: list[Node], start_index=0) -> list[int]:
     # node_sets -> lista zbiorów, gdzie każdy zbiór zawiera wierzchołki mające takie same (leksykograficznie) zbiory poprzedników
     result_ordering = []
     node_sets = [set(), {start_index}]
