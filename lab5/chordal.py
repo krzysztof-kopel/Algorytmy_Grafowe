@@ -1,17 +1,16 @@
+from lab5.lex_bfs import lex_bfs_nodes
 from node_class import Node
-from lex_bfs import lex_bfs
 
 def is_chordal(graph: list[Node]) -> bool:
-    lex_bfs_ordering = lex_bfs(graph)
-    parent_neighbors = set()
-    parent_neighbors.add(lex_bfs_ordering[0].idx)
+    lex_bfs_ordering = lex_bfs_nodes(graph)
+    predecessors = [set() for _ in range(len(graph))]
     for i in range(1, len(lex_bfs_ordering)):
         vertex = lex_bfs_ordering[i]
         neighbors = list()
         for j in range(i):
             if lex_bfs_ordering[j].idx in vertex.out:
-                neighbors.append(j)
-        if neighbors[:-1] not in parent_neighbors:
+                neighbors.append(lex_bfs_ordering[j].idx)
+        if not set(neighbors[:-1]) <= predecessors[neighbors[-1]]:
             return False
-        parent_neighbors = neighbors[:]
+        predecessors[lex_bfs_ordering[i].idx] = set(neighbors)
     return True
