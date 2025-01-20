@@ -26,3 +26,18 @@ def max_clique(graph: list[Node]) -> int:
                 neighbors.append(lex_bfs_ordering[j].idx)
         max_clique_size = max(max_clique_size, len(neighbors) + 1)
     return max_clique_size
+
+def coloring(graph: list[Node]) -> int:
+    lex_bfs_ordering = lex_bfs_nodes(graph)
+    max_color = 1
+    for i, vertex in enumerate(lex_bfs_ordering):
+        used_colors = set()
+        for neighbor in vertex.out:
+            if graph[neighbor].color is not None:
+                used_colors.add(graph[neighbor].color)
+        j = 1
+        while j in used_colors:
+            j += 1
+        vertex.color = j
+        max_color = max(max_color, j)
+    return max_color
