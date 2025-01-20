@@ -41,3 +41,12 @@ def coloring(graph: list[Node]) -> int:
         vertex.color = j
         max_color = max(max_color, j)
     return max_color
+
+def min_vcover(graph: list[Node]) -> int:
+    lex_bfs_ordering = lex_bfs_nodes(graph)[::-1]
+    independent_set = set()
+    for i, vertex in enumerate(lex_bfs_ordering):
+        neighbors = vertex.out
+        if len(neighbors.intersection(independent_set)) == 0:
+            independent_set.add(vertex.idx)
+    return len(graph) - len(independent_set)
